@@ -2,15 +2,19 @@ FROM node:22-alpine
 
 WORKDIR /app
 
+# Build tools for native modules (e.g. better-sqlite3)
+RUN apk add --no-cache python3 make g++
+
 # Install dependencies
 COPY package.json package-lock.json ./
 RUN npm ci
 
-# Copy source
+# Copy source and build
 COPY . .
+RUN npm run build
 
-# Expose API port
-EXPOSE 3000
+# Fly.io sets PORT; default for local runs
+ENV PORT=8080
+EXPOSE 8080
 
-# Run backend in dev mode with tsx watcher
-CMD ["npm", "run", "dev"]
+CMD ["node", "dist/index.js"]

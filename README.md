@@ -162,7 +162,95 @@ When building the client (`npm run build` in `poke-client`), Vite/Rollup may war
 
 ---
 
-## 8. Quick recap
+## 8. Deploy backend to Fly.io
+
+You can run the API on [Fly.io](https://fly.io) so the client can call it from the internet.
+
+**Prerequisites**
+
+- [flyctl](https://fly.io/docs/hands-on/install-flyctl/) installed and logged in (`fly auth login`).
+
+**Steps**
+
+1. **Create the app and volume** (from repo root):
+
+   ```bash
+   cd poke-backend
+   fly launch --no-deploy
+   ```
+
+   If you don’t have an app yet, this creates one from `fly.toml` (app name `pokewiki-api`). Use the same region when asked (e.g. `ord`). Then create a volume in that region:
+
+   ```bash
+   fly volumes create pokewiki_data --region ord --size 1
+   ```
+
+   (Replace `ord` with your app’s region if different.)
+
+2. **Set secrets** (replace the URLs with your real backend and client URLs):
+
+   ```bash
+   fly secrets set BETTER_AUTH_SECRET="$(openssl rand -base64 32)"
+   fly secrets set BETTER_AUTH_BASE_URL="https://pokewiki-api.fly.dev"
+   fly secrets set BETTER_AUTH_TRUSTED_ORIGINS="https://pokewiki-api.fly.dev,https://your-client.fly.dev"
+   fly secrets set CORS_ORIGIN="https://your-client.fly.dev"
+   ```
+
+   Use your actual Fly app URL from `fly info` for `BETTER_AUTH_BASE_URL`. For `CORS_ORIGIN` and `BETTER_AUTH_TRUSTED_ORIGINS`, use the URL(s) of the deployed client (e.g. Vercel or another Fly app).
+
+3. **Deploy**
+
+   ```bash
+   fly deploy
+   ```
+
+The API will be at `https://<your-app-name>.fly.dev`. The SQLite database is stored on the `pokewiki_data` volume at `/data/pokemon.db` (see `DATABASE_PATH` in `fly.toml`).
+
+---
+
+## 9. Deploy client to Vercel
+
+You can host the React client on [Vercel](https://vercel.com) so it’s served over HTTPS and can talk to your Fly backend.
+
+**Prerequisites**
+
+- A [Vercel](https://vercel.com) account (GitHub login is enough).
+- Backend already deployed (e.g. on Fly.io) and its URL.
+
+**Steps**
+
+1. **Push the repo to GitHub** (if you haven’t already). Vercel will deploy from a Git repository.
+
+2. **Import the project on Vercel**
+   - Go to [vercel.com/new](https://vercel.com/new).
+   - Import your GitHub repo.
+   - Set **Root Directory** to `poke-client` (so Vercel builds the client, not the whole repo).
+   - Leave **Framework Preset** as Vite (auto-detected) and **Build Command** as `npm run build` (or `vite build`).
+   - **Output Directory** can stay default (`dist`).
+
+3. **Set environment variable**
+   - In the Vercel project: **Settings → Environment Variables**.
+   - Add:
+     - **Name**: `VITE_API_BASE_URL`
+     - **Value**: your backend URL, e.g. `https://pokewiki-api.fly.dev`
+   - Redeploy so the variable is picked up (or trigger a new deploy after saving).
+
+4. **Allow the client URL in the backend**
+   - On Fly, set your backend’s CORS and auth trusted origins to the Vercel URL, e.g.:
+     ```bash
+     cd poke-backend
+     fly secrets set CORS_ORIGIN="https://your-app.vercel.app"
+     fly secrets set BETTER_AUTH_TRUSTED_ORIGINS="https://pokewiki-api.fly.dev,https://your-app.vercel.app"
+     ```
+   - Replace `your-app.vercel.app` with the real Vercel URL (from the Vercel dashboard).
+
+After deploy, the client will be at `https://<your-project>.vercel.app`. Auth and API calls will go to the URL you set in `VITE_API_BASE_URL`.
+
+**SPA routing:** `poke-client/vercel.json` rewrites all routes to `index.html` so client-side routing (e.g. `/dashboard`, `/reports`) works when opening links or refreshing.
+
+---
+
+## 10. Quick recap
 
 - **Fastest path**: `docker-compose up --build` → open `http://localhost:5173`
 - **Local dev**: run `npm run dev` in both `poke-backend` and `poke-client`

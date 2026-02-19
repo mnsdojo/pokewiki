@@ -8,10 +8,14 @@ const app = new Hono();
 
 app.use("*", logger());
 
+const corsOrigin = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(",").map((o) => o.trim()).filter(Boolean)
+  : ["http://localhost:5173"];
+
 app.use(
   "*",
   cors({
-    origin: ["http://localhost:5173"],
+    origin: corsOrigin,
     allowHeaders: ["Content-Type", "Authorization"],
     allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
@@ -28,12 +32,14 @@ app.get("/api/me", async (c) => {
   return c.json({ user: session.user });
 });
 
+const port = Number(process.env.PORT) || 3000;
+
 serve(
   {
     fetch: app.fetch,
-    port: 3000,
+    port,
   },
   (info) => {
-    console.log(`Server is running on http://localhost:${info.port}`);
+    console.log(`Server is running on http://0.0.0.0:${info.port}`);
   },
 );
