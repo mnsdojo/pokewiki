@@ -192,11 +192,12 @@ You can run the API on [Fly.io](https://fly.io) so the client can call it from t
    ```bash
    fly secrets set BETTER_AUTH_SECRET="$(openssl rand -base64 32)"
    fly secrets set BETTER_AUTH_BASE_URL="https://pokewiki-api.fly.dev"
-   fly secrets set BETTER_AUTH_TRUSTED_ORIGINS="https://pokewiki-api.fly.dev,https://your-client.fly.dev"
-   fly secrets set CORS_ORIGIN="https://your-client.fly.dev"
+   fly secrets set BETTER_AUTH_TRUSTED_ORIGINS="https://pokewiki-api.fly.dev,https://your-client.vercel.app"
+   fly secrets set CORS_ORIGIN="https://your-client.vercel.app"
+   fly secrets set BETTER_AUTH_ALLOW_CROSS_SITE="true"
    ```
 
-   Use your actual Fly app URL from `fly info` for `BETTER_AUTH_BASE_URL`. For `CORS_ORIGIN` and `BETTER_AUTH_TRUSTED_ORIGINS`, use the URL(s) of the deployed client (e.g. Vercel or another Fly app).
+   Use your actual Fly app URL from `fly info` for `BETTER_AUTH_BASE_URL`. For `CORS_ORIGIN` and `BETTER_AUTH_TRUSTED_ORIGINS`, use the URL(s) of the deployed client (e.g. Vercel). **`BETTER_AUTH_ALLOW_CROSS_SITE=true`** is required when the client is on a different domain (e.g. Vercel) so sign-in/sign-up are not blocked by Better Auth’s cross-site CSRF check; keep `trustedOrigins` and CORS set so only your frontend can call the API.
 
 3. **Deploy**
 
