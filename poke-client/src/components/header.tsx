@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router";
 import { useSession, signOut } from "../lib/auth";
 import { LogOut, User } from "lucide-react";
+import { ThemeSwitcher } from "./theme-switcher";
 
 export default function Header() {
   const { data: session } = useSession();
@@ -54,6 +55,7 @@ export default function Header() {
             )}
 
             <div className="flex items-center gap-3">
+              <ThemeSwitcher />
               {session ? (
                 <div className="flex items-center gap-4">
                   <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-neutral-50 dark:bg-neutral-800 rounded-full border border-neutral-200 dark:border-neutral-700">

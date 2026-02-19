@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
+import { ThemeSwitcher } from "@/components/theme-switcher";
 import { ArrowRight } from "lucide-react";
 
 export default function HomePage() {
@@ -8,9 +9,10 @@ export default function HomePage() {
       <header className="border-b border-neutral-200 dark:border-neutral-800">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 font-bold text-xl">
-            <span className="text-red-500">Poke</span>Wiki
+            <span className="text-primary">Poke</span>Wiki
           </div>
           <div className="flex items-center gap-4">
+            <ThemeSwitcher />
             <Link to="/login">
               <Button variant="ghost">Login</Button>
             </Link>
@@ -24,7 +26,7 @@ export default function HomePage() {
       <main className="flex-1 flex flex-col items-center justify-center text-center p-8 md:p-24 space-y-8 bg-linear-to-b from-white to-neutral-50 dark:from-neutral-950 dark:to-neutral-900">
         <div className="max-w-3xl space-y-6">
           <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-neutral-900 dark:text-white">
-            Master the <span className="text-red-500">World of Pokémon</span>
+            Master the <span className="text-primary">World of Pokémon</span>
           </h1>
           <p className="text-xl text-neutral-500 dark:text-neutral-400 max-w-2xl mx-auto leading-relaxed">
             The ultimate companion for trainers. Track, analyze, and discover Pokémon with advanced analytics and a beautiful interface.

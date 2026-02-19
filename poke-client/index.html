@@ -12,6 +12,16 @@
 </head>
 
 <body>
+  <script>
+    (function () {
+      var theme = localStorage.getItem("pokewiki-theme");
+      var dark = localStorage.getItem("pokewiki-dark");
+      var validThemes = ["red", "blue", "yellow", "green", "purple", "gold"];
+      document.documentElement.setAttribute("data-theme", validThemes.includes(theme) ? theme : "red");
+      if (dark === "1") document.documentElement.classList.add("dark");
+      else if (window.matchMedia("(prefers-color-scheme: dark)").matches && dark !== "0") document.documentElement.classList.add("dark");
+    })();
+  </script>
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>
