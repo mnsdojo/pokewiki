@@ -1,9 +1,3 @@
-export const NAV_ITEMS = [
-  { label: "Home", path: "/" },
-  { label: "Dashboard", path: "/dashboard" },
-  { label: "Reports", path: "/reports" },
-];
-
 export const API_BASE_URL = "http://localhost:3000";
 
 export const POKE_API_BASE_URL = "https://pokeapi.co/api/v2/pokemon";
