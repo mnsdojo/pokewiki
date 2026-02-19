@@ -3,7 +3,7 @@ import Database from "better-sqlite3";
 
 export const auth = betterAuth({
   baseURL: "http://localhost:3000",
-  database: new Database("./pokemon.db"), // 👈 directly, no wrapper object
+  database: new Database("./pokemon.db"),
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 6,

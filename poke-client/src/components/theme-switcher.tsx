@@ -43,7 +43,7 @@ export function ThemeSwitcher() {
             <div
               role="listbox"
               aria-label="Pokémon theme"
-              className="absolute right-0 top-full mt-1 z-50 min-w-[10rem] py-2 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl shadow-lg"
+              className="absolute right-0 top-full mt-1 z-50 min-w-40 py-2 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl shadow-lg"
             >
               <p className="px-3 py-1.5 text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
                 Theme

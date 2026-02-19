@@ -141,7 +141,28 @@ Then open:
 
 ---
 
-## 7. Quick recap
+## 7. Build – chunk size warning
+
+When building the client (`npm run build` in `poke-client`), Vite/Rollup may warn:
+
+```text
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking
+- Adjust the chunk size limit via build.chunkSizeWarningLimit
+```
+
+**What we did to fix it:**
+
+1. **Route-level code-splitting** – Page components (Home, Login, Signup, Dashboard, Reports, Not Found) are loaded with `React.lazy()` and a single `Suspense` in `App.tsx`. Only the route the user visits is fetched, so the initial bundle stays smaller.
+
+2. **Manual chunks** – In `vite.config.ts`, `manualChunks` puts `recharts` in its own chunk. Recharts is only needed on Dashboard/Reports, so it loads with those routes instead of in the main vendor bundle.
+
+3. **Chunk size limit** – `chunkSizeWarningLimit: 550` is set so the combined vendor chunk (React, router, TanStack Query, etc.) doesn’t trigger the warning. The largest chunk remains under the limit; raising it slightly avoids noise while we keep the above optimizations.
+
+---
+
+## 8. Quick recap
 
 - **Fastest path**: `docker-compose up --build` → open `http://localhost:5173`
 - **Local dev**: run `npm run dev` in both `poke-backend` and `poke-client`
